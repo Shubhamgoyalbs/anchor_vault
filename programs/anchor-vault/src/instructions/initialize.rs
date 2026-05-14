@@ -34,6 +34,7 @@ impl<'info> Initialize<'info> {
   pub fn handler(ctx: Context<Initialize>) -> Result<()> {
     ctx.accounts.vault_state.state_bump = ctx.bumps.vault_state;
     ctx.accounts.vault_state.vault_bump = ctx.bumps.vault;
+    ctx.accounts.vault_state.time_stamp = None;
     Ok(())
   }
 }

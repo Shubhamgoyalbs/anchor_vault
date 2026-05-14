@@ -1,6 +1,17 @@
 use anchor_lang::prelude::*;
-use anchor_lang::system_program::{transfer, Transfer};
-use crate::VaultState;
+use anchor_lang::{
+  system_program::{
+    transfer,
+    Transfer
+  },
+  solana_program::{
+    clock::Clock
+  }
+};
+use crate::{
+  state::VaultState,
+  error::ErrorCode
+};
 
 #[derive(Accounts)]
 pub struct Withdraw<'info> {
@@ -31,6 +42,17 @@ pub struct Withdraw<'info> {
 
 impl<'info> Withdraw<'info> {
   pub fn handler(ctx: Context<Withdraw>, amount: u64) -> Result<()> {
+    match ctx.accounts.vault_state.time_stamp {
+      None => {}
+      Some(time_stamp) => {
+        let current_timestamp = Clock::get()?.unix_timestamp;
+        require!(
+          time_stamp > current_timestamp,
+          ErrorCode::Locked
+        );
+      }
+    }
+    
     let seeds = &[
         b"vault",
         ctx.accounts.signer.key.as_ref(),
