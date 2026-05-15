@@ -9,6 +9,7 @@ use anchor_lang::{
   }
 };
 use crate::state::VaultState;
+use crate::error::ErrorCode;
 
 #[derive(Accounts)]
 pub struct Deposit<'info> {
@@ -58,10 +59,12 @@ impl<'info> Deposit<'info> {
         let current_time_stamp = Clock::get()?.unix_timestamp;
         match ctx.accounts.vault_state.time_stamp {
           None => {
+            require!(time_stamp > current_time_stamp, ErrorCode::InvalidTimeStamp);
             ctx.accounts.vault_state.time_stamp = Some(time_stamp);
           }
           Some(val) => {
             if val <= current_time_stamp {
+              require!(time_stamp > current_time_stamp, ErrorCode::InvalidTimeStamp);
               ctx.accounts.vault_state.time_stamp = Some(time_stamp);
             }
           }

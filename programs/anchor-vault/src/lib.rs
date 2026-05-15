@@ -19,8 +19,8 @@ pub mod anchor_vault {
     Initialize::handler(ctx)
   }
   
-  pub fn deposit(ctx: Context<Deposit>, amount: u64) -> Result<()> {
-    Deposit::handler(ctx, amount)
+  pub fn deposit(ctx: Context<Deposit>, amount: u64, next_unlock_time: Option<i64>) -> Result<()> {
+    Deposit::handler(ctx, amount, next_unlock_time)
   }
   
   pub fn withdraw(ctx: Context<Withdraw>, amount: u64) -> Result<()> {
