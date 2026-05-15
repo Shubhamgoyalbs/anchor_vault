@@ -47,7 +47,7 @@ impl<'info> Withdraw<'info> {
       Some(time_stamp) => {
         let current_timestamp = Clock::get()?.unix_timestamp;
         require!(
-          time_stamp > current_timestamp,
+          time_stamp < current_timestamp,
           ErrorCode::Locked
         );
       }
